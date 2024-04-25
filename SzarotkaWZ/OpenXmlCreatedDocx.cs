@@ -35,8 +35,8 @@ namespace SzarotkaWZ
                 body.AppendChild(new Paragraph(new Text("")));
                 body.AppendChild(new Paragraph(new Text("")));
                 body.AppendChild(new Paragraph(new Text("")));
-
             }
+            
         }
 
         static Table CreatedTable()

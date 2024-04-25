@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 
+using System.Diagnostics;
+
 using SzarotkaWZ;
 using SzarotkaWZ.Models;
 
@@ -15,6 +17,7 @@ try
     var csvPath = config.GetSection("Lokalizacja_pliku_CSV").Value;
     var docxPath = config.GetSection("Lokalizacja_pliku_docx").Value;
     var maxSheet = int.Parse(config.GetSection("Ilość_wz_do_pobrania").Value);
+    var wordApp = config.GetSection("Lokalizacja_pliku_word.exe").Value;
 
     int StartSheet = 0;
     maxSheet += StartSheet + 1;
@@ -31,8 +34,17 @@ try
     var extension = Path.GetExtension(docxPath);
     var name = Path.GetFileNameWithoutExtension(docxPath);
     var path = Path.GetDirectoryName(docxPath);
-    for (int i = 1; ; i++)
+    for (int i = 0; ; i++)
     {
+        if (i == 0)
+        {
+            if (!System.IO.File.Exists(Path.Combine(path, $"{name}-{Date()}{extension}")))
+            {
+                docxPath = Path.Combine(path, $"{name}-{Date()}{extension}");
+                break;
+            }
+        }
+
         if (!System.IO.File.Exists(Path.Combine(path, $"{name}-{Date()}({i}){extension}")))
         {
             docxPath = Path.Combine(path, $"{name}-{Date()}({i}){extension}");
@@ -42,6 +54,12 @@ try
 
     OpenXmlCreatedDocx.CreateDocxWithTables(docxPath, wzs);
     //OpenXmlCreatedDocxFromHtml.CreateHtml(docxPath, wzs);
+
+
+    var p = new Process();
+    p.StartInfo.FileName = wordApp;
+    p.StartInfo.ArgumentList.Add(docxPath);
+    p.Start();
 
     Environment.Exit(0);
 }
