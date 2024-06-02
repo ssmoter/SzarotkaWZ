@@ -34,6 +34,13 @@ try
     var extension = Path.GetExtension(docxPath);
     var name = Path.GetFileNameWithoutExtension(docxPath);
     var path = Path.GetDirectoryName(docxPath);
+
+    if(!System.IO.Directory.Exists(docxPath))
+    {
+        var directory = new DirectoryInfo(path);
+        System.IO.Directory.CreateDirectory(directory.FullName);
+    }
+
     for (int i = 0; ; i++)
     {
         if (i == 0)
@@ -53,7 +60,6 @@ try
     }
 
     OpenXmlCreatedDocx.CreateDocxWithTables(docxPath, wzs);
-    //OpenXmlCreatedDocxFromHtml.CreateHtml(docxPath, wzs);
 
 
     var p = new Process();
@@ -71,7 +77,7 @@ catch (Exception ex)
         , Environment.NewLine
         , Environment.NewLine
         , ex.StackTrace);
-    throw;
+    Console.ReadKey();
 }
 
 static string Date()
